@@ -81,7 +81,7 @@ public class RequestSchedulerFilter implements Filter {
   // Used only when request scheduling is disabled.
   private Meter globalTotalRequests;
   private Counter globalActiveRequests;
-  private Timer golbalProcessingTime;
+  private Timer globalProcessingTime;
 
   private final MetricRegistry metrics = new MetricRegistry();
   private final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
@@ -111,7 +111,7 @@ public class RequestSchedulerFilter implements Filter {
     } else {
       this.globalTotalRequests = metrics.meter(MetricRegistry.name("global", "requests", "total"));
       this.globalActiveRequests = metrics.counter(MetricRegistry.name("global", "requests", "running"));
-      this.golbalProcessingTime = metrics.timer(MetricRegistry.name("global", "request", "processingTime"));
+      this.globalProcessingTime = metrics.timer(MetricRegistry.name("global", "request", "processingTime"));
     }
 
     if (Boolean.getBoolean(ENABLE_JMX_REPORTING_PARAM)) {
@@ -233,7 +233,7 @@ public class RequestSchedulerFilter implements Filter {
     } else {// The request scheduling is disabled.
       // Just forward the request down the servlet chain and record the
       // statistics.
-      Context ctx = golbalProcessingTime.time();
+      Context ctx = globalProcessingTime.time();
       try {
         globalActiveRequests.inc();
         chain.doFilter(request, response);
